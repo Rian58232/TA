@@ -286,10 +286,10 @@
     if (!chapters.length || !visuals.length) return;
 
     const labels = {
-      piso: ['01', 'Pisos'],
+      piso: ['01', 'Pisos externos'],
       cinza: ['02', 'Revestimentos'],
-      pedra: ['03', 'Texturas'],
-      '3d': ['04', 'Relevos'],
+      pedra: ['03', 'Revestimentos decorativos'],
+      '3d': ['04', 'Revestimentos em relevo'],
       bege: ['05', 'Acabamentos']
     };
 
@@ -367,7 +367,7 @@
       const cardImage = $('img', card);
       image.src = cardImage ? (cardImage.currentSrc || cardImage.src) : '';
       image.alt = cardImage ? cardImage.alt : '';
-      if (title) title.textContent = card.dataset.title || image.alt || 'Projeto Tatu Piscinas';
+      if (title) title.textContent = card.dataset.title || image.alt || 'Projeto da Tatu Piscinas';
       if (count) count.textContent = `${String(index + 1).padStart(2, '0')} / ${String(visibleCards.length).padStart(2, '0')}`;
     };
 
@@ -461,15 +461,14 @@
       const note = $('#noteInput')?.value.trim() || '';
 
       const lines = [
-        'Olá! Vim pelo site da Tatu Piscinas.',
+        'Olá! Vim pelo site da Tatu Piscinas e gostaria de solicitar um orçamento.',
         '',
-        `Tenho interesse em: ${interest}`
+        `Serviço de interesse: ${interest}`
       ];
 
       if (poolType) lines.push(`Tipo de piscina: ${poolType}`);
       if (city) lines.push(`Cidade: ${city}`);
       if (note) lines.push('', `Observação: ${note}`);
-      lines.push('', 'Gostaria de conversar sobre um orçamento.');
 
       const url = `https://wa.me/556796078271?text=${encodeURIComponent(lines.join('\n'))}`;
       window.open(url, '_blank', 'noopener,noreferrer');

@@ -4067,3 +4067,158 @@ body.is-ready .hero-reveal:nth-child(5) { transition-delay: .36s; }
     animation: none !important;
   }
 }
+
+/* ======================================================================
+   V3.1.1 — Video Review Corrections
+   Restore the real brand + tighten the pacing observed in the desktop run.
+   ====================================================================== */
+
+/* The real company logo remains part of the brand. Never replace it with
+   a generic symbol. The text lockup is secondary support, not a substitute. */
+.brand-mark-real {
+  flex: 0 0 66px;
+  width: 66px;
+  height: 48px;
+  aspect-ratio: auto;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 3px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 10px;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 10px 28px rgba(0,0,0,.2);
+}
+
+.brand-mark-real img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 7px;
+}
+
+.site-header.is-scrolled .brand-mark-real {
+  border-color: rgba(255,255,255,.2);
+  box-shadow: 0 9px 25px rgba(0,0,0,.24);
+}
+
+/* Tighter rhythm after the hero. The video showed too much dead air here. */
+.trust-strip {
+  padding-bottom: 20px;
+}
+
+.pools {
+  padding-top: clamp(72px, 7vw, 100px);
+}
+
+/* Water -> texture should read as a transition, not as an empty section. */
+.water-to-stone {
+  min-height: clamp(230px, 25vw, 350px);
+  height: auto;
+}
+
+.water-to-stone p {
+  top: 38%;
+  padding: 12px 18px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 999px;
+  background: rgba(3,21,29,.16);
+  backdrop-filter: blur(8px);
+}
+
+.stone-transition-layer {
+  transform: translateY(31%);
+  opacity: .9;
+  clip-path: polygon(0 40%, 8% 34%, 17% 41%, 27% 31%, 37% 39%, 47% 28%, 57% 37%, 68% 25%, 78% 35%, 88% 24%, 100% 31%, 100% 100%, 0 100%);
+}
+
+.transition-wave {
+  height: 36%;
+}
+
+/* The material story looked strong, but the handoff into the next scene
+   had too much vertical breathing room in the recorded run. */
+.materials {
+  padding-bottom: clamp(78px, 8vw, 110px);
+}
+
+.materials-cta {
+  margin-top: 44px;
+}
+
+.complete-space {
+  padding-top: clamp(76px, 7vw, 104px);
+}
+
+/* Keep the real mark visible again at the final brand touchpoint. */
+.footer-brand-real {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-logo-frame {
+  flex: 0 0 104px;
+  width: 104px;
+  height: 74px;
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(255,255,255,.96);
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+.footer-logo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.footer-brand-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.footer-brand-copy > span {
+  color: rgba(255,255,255,.5);
+  font-size: .72rem;
+}
+
+@media (max-width: 760px) {
+  .brand-mark-real {
+    flex-basis: 56px;
+    width: 56px;
+    height: 42px;
+  }
+
+  .brand-wordmark small {
+    display: none;
+  }
+
+  .water-to-stone {
+    min-height: 210px;
+  }
+
+  .water-to-stone p {
+    top: 34%;
+    gap: 9px;
+    padding: 10px 12px;
+  }
+
+  .transition-word {
+    font-size: .62rem;
+    letter-spacing: .17em;
+  }
+
+  .footer-brand-real {
+    align-items: flex-start;
+  }
+
+  .footer-logo-frame {
+    flex-basis: 86px;
+    width: 86px;
+    height: 62px;
+  }
+}
