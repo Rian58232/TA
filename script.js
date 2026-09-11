@@ -878,14 +878,8 @@
   }
 
   function initDesktop3DModule() {
-    // Three.js is intentionally not downloaded/parsing on phones. Desktop keeps the full 3D experience.
-    if (mobileLite || reducedMotion || saveData || !finePointer || window.innerWidth < 1024) return;
-    const load = () => import('./three-scenes.js?v=3.3.1').catch(error => {
-      console.warn('Experiência 3D indisponível; usando o layout padrão.', error);
-      document.documentElement.classList.add('no-webgl');
-    });
-    if ('requestIdleCallback' in window) window.requestIdleCallback(load, { timeout: 1400 });
-    else window.setTimeout(load, 650);
+    // 3D WebGL desativado nesta versão para evitar confusão visual e preservar consistência.
+    document.documentElement.classList.add('no-webgl');
   }
 
   function initYear() {
