@@ -689,6 +689,93 @@
     requestAnimationFrame(frame);
   }
 
+
+  function initSpatial3D() {
+    const viewport = $('#spatialViewport');
+    const scene = $('#spatialScene');
+    if (!viewport || !scene || reducedMotion) return;
+
+    if (finePointer) {
+      let leaveTimer = 0;
+
+      const reset = () => {
+        viewport.classList.remove('is-moving');
+        viewport.style.setProperty('--scene-rx', '5deg');
+        viewport.style.setProperty('--scene-ry', '-7deg');
+        viewport.style.setProperty('--scene-x', '0px');
+        viewport.style.setProperty('--scene-y', '0px');
+        const water = $('.spatial-water-glass', viewport);
+        if (water) {
+          water.style.setProperty('--water-x', '62%');
+          water.style.setProperty('--water-y', '36%');
+        }
+      };
+
+      viewport.addEventListener('pointermove', event => {
+        window.clearTimeout(leaveTimer);
+        const rect = viewport.getBoundingClientRect();
+        const nx = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+        const ny = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+        const x = (nx - .5) * 2;
+        const y = (ny - .5) * 2;
+
+        viewport.classList.add('is-moving');
+        viewport.style.setProperty('--scene-rx', `${5 - y * 7}deg`);
+        viewport.style.setProperty('--scene-ry', `${-7 + x * 10}deg`);
+        viewport.style.setProperty('--scene-x', `${x * 10}px`);
+        viewport.style.setProperty('--scene-y', `${y * 7}px`);
+
+        const water = $('.spatial-water-glass', viewport);
+        if (water) {
+          water.style.setProperty('--water-x', `${nx * 100}%`);
+          water.style.setProperty('--water-y', `${ny * 100}%`);
+        }
+      }, { passive: true });
+
+      viewport.addEventListener('pointerleave', () => {
+        leaveTimer = window.setTimeout(reset, 40);
+      });
+    }
+  }
+
+  function initDepthTilt() {
+    if (!finePointer || reducedMotion) return;
+
+    const bind = (element, maxX, maxY, className = 'is-depth-active') => {
+      if (!element) return;
+      element.addEventListener('pointermove', event => {
+        const rect = element.getBoundingClientRect();
+        const nx = ((event.clientX - rect.left) / rect.width - .5) * 2;
+        const ny = ((event.clientY - rect.top) / rect.height - .5) * 2;
+        element.classList.add(className);
+        element.style.transform = `rotateX(${ny * -maxX}deg) rotateY(${nx * maxY}deg) translateZ(0)`;
+      }, { passive: true });
+      element.addEventListener('pointerleave', () => {
+        element.classList.remove(className);
+        element.style.transform = '';
+      });
+    };
+
+    $$('.pool-tile').forEach(tile => bind(tile, 1.8, 2.4));
+
+    const materialStage = $('.materials-stage-frame');
+    if (materialStage) {
+      materialStage.addEventListener('pointermove', event => {
+        const rect = materialStage.getBoundingClientRect();
+        const nx = ((event.clientX - rect.left) / rect.width - .5) * 2;
+        const ny = ((event.clientY - rect.top) / rect.height - .5) * 2;
+        materialStage.classList.add('is-depth-active');
+        materialStage.style.setProperty('--mat-rx', `${ny * -1.8}deg`);
+        materialStage.style.setProperty('--mat-ry', `${nx * 2.2}deg`);
+      }, { passive: true });
+      materialStage.addEventListener('pointerleave', () => {
+        materialStage.classList.remove('is-depth-active');
+        materialStage.style.setProperty('--mat-rx', '0deg');
+        materialStage.style.setProperty('--mat-ry', '0deg');
+      });
+    }
+  }
+
   function initYear() {
     const year = $('#year');
     if (year) year.textContent = String(new Date().getFullYear());
@@ -710,6 +797,8 @@
   initFloatingWhatsApp();
   initPointerSpotlights();
   initCaseMotion();
+  initSpatial3D();
+  initDepthTilt();
   initScrollState();
   initYear();
   createMasterLoop(waterModel);
