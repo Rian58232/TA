@@ -17,7 +17,7 @@
   <title>Tatu Piscinas | Piscinas, pisos e revestimentos em Dourados/MS</title>
   <link rel="icon" href="./assets/icons/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="./assets/images/piscinas/vinil/vinil1.webp" as="image" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="./style.css?v=3.2.0">
+  <link rel="stylesheet" href="./style.css?v=3.3.0">
   <script>document.documentElement.classList.remove('no-js');document.documentElement.classList.add('js');</script>
 
   <script type="application/ld+json">
@@ -38,7 +38,7 @@
     "sameAs": ["https://www.facebook.com/share/1GJaH1GL5F/"]
   }
   </script>
-  <!-- Tatu Piscinas V3.1 — Art Direction Polish -->
+  <!-- Tatu Piscinas V3.3 — True 3D Experience -->
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -104,6 +104,12 @@
         </picture>
         <canvas id="waterCanvas"></canvas>
         <div class="hero-depth"></div>
+        <div class="hero-webgl" id="heroWebGL" aria-hidden="true">
+          <canvas id="hero3DCanvas"></canvas>
+          <div class="hero-webgl-ring hero-webgl-ring-a"></div>
+          <div class="hero-webgl-ring hero-webgl-ring-b"></div>
+          <span class="hero-webgl-tag">MODELO 3D · INTERATIVO</span>
+        </div>
         <div class="hero-grain"></div>
       </div>
 
@@ -220,6 +226,13 @@
         </div>
 
         <div class="spatial-viewport reveal interactive-image" id="spatialViewport" data-pointer-label="3D" aria-label="Composição tridimensional ilustrativa com piscina, piso e revestimento">
+          <canvas class="spatial-webgl-canvas" id="assembly3DCanvas" aria-hidden="true"></canvas>
+          <div class="spatial-webgl-ui" aria-hidden="true">
+            <span class="spatial-webgl-chip chip-wall">03 · REVESTIMENTO</span>
+            <span class="spatial-webgl-chip chip-deck">02 · PISO</span>
+            <span class="spatial-webgl-chip chip-pool">01 · PISCINA</span>
+            <small>ROLE A PÁGINA PARA SEPARAR AS CAMADAS</small>
+          </div>
           <div class="spatial-scene" id="spatialScene" aria-hidden="true">
             <div class="spatial-grid-plane"></div>
 
@@ -378,6 +391,39 @@
           <p>Veja fotos reais de piscinas, pisos, revestimentos e alguns bastidores dos serviços da Tatu Piscinas.</p>
         </header>
 
+        <div class="project-deck-wrap reveal" id="projectDeck3D" aria-label="Destaques do portfólio em visualização tridimensional">
+          <div class="project-deck-head">
+            <div><span>DESTAQUES EM 3D</span><strong>Arraste, use as setas ou role sobre a galeria.</strong></div>
+            <div class="project-deck-controls">
+              <button type="button" id="deckPrev" aria-label="Projeto anterior">←</button>
+              <span id="deckCounter">01 / 05</span>
+              <button type="button" id="deckNext" aria-label="Próximo projeto">→</button>
+            </div>
+          </div>
+          <div class="project-deck" id="projectDeck">
+            <article class="deck-card is-active" data-deck-card style="--deck-index:0">
+              <img src="./assets/images/projetos/projeto-piscina-residencia.webp" alt="Piscina em área residencial" loading="lazy" decoding="async">
+              <div><small>PISCINA</small><strong>Projeto residencial</strong></div>
+            </article>
+            <article class="deck-card" data-deck-card style="--deck-index:1">
+              <img src="./assets/images/revestimentos/revestimento-3d.webp" alt="Revestimento geométrico iluminado" loading="lazy" decoding="async">
+              <div><small>REVESTIMENTO</small><strong>Relevo geométrico</strong></div>
+            </article>
+            <article class="deck-card" data-deck-card style="--deck-index:2">
+              <img src="./assets/images/projetos/projeto-fibra-jardim.webp" alt="Piscina integrada ao jardim" loading="lazy" decoding="async">
+              <div><small>ÁREA DE LAZER</small><strong>Piscina e paisagismo</strong></div>
+            </article>
+            <article class="deck-card" data-deck-card style="--deck-index:3">
+              <img src="./assets/images/pisos/piso-amadeirado.webp" alt="Piso em área externa" loading="lazy" decoding="async">
+              <div><small>PISO</small><strong>Área externa</strong></div>
+            </article>
+            <article class="deck-card" data-deck-card style="--deck-index:4">
+              <img src="./assets/images/projetos/projeto-piscina-textura.webp" alt="Piscina com acabamento azul" loading="lazy" decoding="async">
+              <div><small>PISCINA</small><strong>Acabamento em mosaico</strong></div>
+            </article>
+          </div>
+        </div>
+
         <div class="project-stories" aria-label="Projetos em destaque">
           <article class="project-story reveal">
             <div class="project-story-copy">
@@ -525,6 +571,11 @@
         </div>
 
         <form class="project-builder reveal" id="projectBuilder">
+          <div class="builder-3d-preview" id="builder3DPreview" aria-label="Prévia tridimensional ilustrativa do projeto">
+            <canvas id="builder3DCanvas" aria-hidden="true"></canvas>
+            <div class="builder-3d-fallback" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="builder-3d-meta"><span>PRÉVIA 3D</span><strong id="builder3DLabel">Escolha uma opção abaixo</strong><small>Visualização ilustrativa</small></div>
+          </div>
           <fieldset>
             <legend><span>01</span> O que você procura?</legend>
             <div class="option-grid">
@@ -595,6 +646,11 @@
         <img src="./assets/images/piscinas/fibra/fibra4.jpg" alt="Piscina iluminada à noite" width="1040" height="780" loading="lazy" decoding="async">
       </picture>
       <div class="final-cta-water" aria-hidden="true"></div>
+      <div class="final-cta-3d" aria-hidden="true">
+        <span class="cta-orbit cta-orbit-a"></span>
+        <span class="cta-orbit cta-orbit-b"></span>
+        <span class="cta-pool-slab"><i></i></span>
+      </div>
       <div class="final-cta-word" aria-hidden="true">TATU</div>
       <div class="container final-cta-content reveal">
         <p>FALE COM A TATU PISCINAS</p>
@@ -647,6 +703,7 @@
     <button class="lightbox-nav lightbox-next" id="lightboxNext" type="button" aria-label="Próxima imagem">→</button>
   </div>
 
-  <script src="./script.js?v=3.2.0" defer></script>
+  <script src="./script.js?v=3.3.0" defer></script>
+  <script type="module" src="./three-scenes.js?v=3.3.0"></script>
 </body>
 </html>

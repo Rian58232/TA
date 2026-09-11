@@ -4873,3 +4873,572 @@ body.is-ready .hero-reveal:nth-child(5) { transition-delay: .36s; }
     animation: none !important;
   }
 }
+
+/* =========================================================
+   V3.3 — TRUE 3D EXPERIENCE
+   Real WebGL pool scenes + spatial gallery + depth polish
+   ========================================================= */
+
+.hero-webgl {
+  position: absolute;
+  z-index: 4;
+  right: -2vw;
+  bottom: 0;
+  width: min(62vw, 980px);
+  height: 66%;
+  opacity: .82;
+  pointer-events: auto;
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.32) 13%, #000 38%, #000 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.32) 13%, #000 38%, #000 100%);
+}
+
+.hero-webgl canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: saturate(1.04) contrast(1.03);
+}
+
+.hero-webgl-tag {
+  position: absolute;
+  right: 5%;
+  bottom: 8%;
+  padding: 8px 12px;
+  border: 1px solid rgba(154,247,255,.18);
+  border-radius: 999px;
+  color: rgba(225,253,255,.52);
+  background: rgba(3,21,29,.32);
+  backdrop-filter: blur(10px);
+  font-size: .56rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.hero-webgl-ring {
+  position: absolute;
+  border: 1px solid rgba(84,229,239,.11);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: rotateX(68deg) rotateZ(-10deg);
+}
+
+.hero-webgl-ring-a {
+  right: 7%;
+  bottom: 8%;
+  width: 48%;
+  aspect-ratio: 1;
+}
+
+.hero-webgl-ring-b {
+  right: 22%;
+  bottom: 2%;
+  width: 67%;
+  aspect-ratio: 1;
+  border-color: rgba(255,194,26,.08);
+  transform: rotateX(68deg) rotateZ(18deg);
+}
+
+.hero-grain { z-index: 5; }
+
+.no-webgl .hero-webgl,
+.no-webgl .spatial-webgl-canvas,
+.no-webgl .spatial-webgl-ui,
+.no-webgl #builder3DCanvas { display: none !important; }
+
+/* Actual 3D assembly scene */
+.spatial-webgl-canvas {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity .8s ease;
+}
+
+.spatial-webgl-ui {
+  position: absolute;
+  z-index: 6;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .6s ease .16s;
+}
+
+.spatial-viewport[data-webgl="ready"] .spatial-webgl-canvas,
+.spatial-viewport[data-webgl="ready"] .spatial-webgl-ui { opacity: 1; }
+
+.spatial-viewport[data-webgl="ready"] .spatial-scene,
+.spatial-viewport[data-webgl="ready"] .spatial-axis { opacity: 0; pointer-events: none; }
+
+.spatial-webgl-chip {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  min-height: 31px;
+  padding: 0 10px;
+  border: 1px solid rgba(197,249,255,.15);
+  border-radius: 999px;
+  color: rgba(231,253,255,.73);
+  background: rgba(4,26,34,.48);
+  backdrop-filter: blur(12px);
+  font-size: .55rem;
+  font-weight: 850;
+  letter-spacing: .11em;
+  box-shadow: 0 8px 30px rgba(0,0,0,.16);
+}
+
+.spatial-webgl-chip::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--aqua);
+  box-shadow: 0 0 15px rgba(50,221,232,.85);
+}
+
+.chip-wall { top: 11%; right: 9%; }
+.chip-deck { left: 8%; bottom: 14%; }
+.chip-pool { right: 12%; bottom: 19%; }
+
+.spatial-webgl-ui small {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  color: rgba(255,255,255,.28);
+  font-size: .52rem;
+  font-weight: 800;
+  letter-spacing: .13em;
+}
+
+/* Material frame now reads like a physical sample slab. */
+.materials-stage-frame::before,
+.materials-stage-frame::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.materials-stage-frame::before {
+  z-index: -1;
+  inset: 12px -14px -16px 18px;
+  background: #6d695f;
+  transform: translateZ(-45px);
+  box-shadow: 0 22px 40px rgba(73,63,47,.22);
+}
+
+.materials-stage-frame::after {
+  z-index: 9;
+  inset: 0;
+  background:
+    radial-gradient(circle at var(--material-light-x,50%) var(--material-light-y,50%), rgba(255,255,255,.22), transparent 29%),
+    linear-gradient(115deg, transparent 34%, rgba(255,255,255,.09) 48%, transparent 61%);
+  mix-blend-mode: soft-light;
+  opacity: .72;
+}
+
+.material-visual picture {
+  transform: translate3d(var(--material-depth-x,0px), var(--material-depth-y,0px), 18px) scale(1.018);
+  transition: transform .32s var(--ease-out-expo);
+}
+
+.materials-stage-label { transform: translateZ(46px); }
+
+/* 3D portfolio deck */
+.project-deck-wrap {
+  margin: 16px 0 92px;
+  padding: 22px 0 6px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.project-deck-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.project-deck-head > div:first-child {
+  display: grid;
+  gap: 5px;
+}
+
+.project-deck-head span {
+  color: var(--aqua);
+  font-size: .58rem;
+  font-weight: 850;
+  letter-spacing: .15em;
+}
+
+.project-deck-head strong {
+  color: rgba(255,255,255,.58);
+  font-size: .78rem;
+  font-weight: 600;
+}
+
+.project-deck-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.project-deck-controls button {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255,255,255,.045);
+  cursor: pointer;
+  transition: transform .25s ease, background .25s ease, border-color .25s ease;
+}
+
+.project-deck-controls button:hover {
+  transform: translateY(-2px);
+  border-color: rgba(50,221,232,.42);
+  background: rgba(50,221,232,.09);
+}
+
+.project-deck-controls span {
+  min-width: 54px;
+  color: rgba(255,255,255,.44);
+  text-align: center;
+}
+
+.project-deck {
+  position: relative;
+  height: clamp(410px, 44vw, 590px);
+  overflow: hidden;
+  perspective: 1500px;
+  perspective-origin: 50% 44%;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.project-deck:active { cursor: grabbing; }
+
+.deck-card {
+  --deck-offset: 0;
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  width: min(43vw, 590px);
+  height: 88%;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 26px;
+  background: #071b22;
+  box-shadow: 0 30px 85px rgba(0,0,0,.36);
+  transform-style: preserve-3d;
+  transform: translateX(-50%) translateZ(-420px) rotateY(0deg) scale(.82);
+  opacity: .15;
+  transition: transform .75s var(--ease-out-expo), opacity .55s ease, filter .55s ease, box-shadow .55s ease;
+  will-change: transform;
+}
+
+/* abs() is not available in some browsers: explicit offset states are set below as fallback. */
+.deck-card[style*="--deck-offset: -2"], .deck-card[style*="--deck-offset: 2"] { opacity: .35; }
+
+.deck-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.045);
+  transition: transform .75s var(--ease-out-expo), filter .55s ease;
+}
+
+.deck-card::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 48%, rgba(2,15,20,.9) 100%);
+}
+
+.deck-card::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  inset: -30% -60%;
+  background: linear-gradient(110deg, transparent 40%, rgba(143,247,255,.16) 50%, transparent 60%);
+  transform: translateX(-40%);
+  transition: transform .85s var(--ease-out-expo);
+}
+
+.deck-card.is-active {
+  z-index: 5;
+  box-shadow: 0 42px 110px rgba(0,0,0,.48), 0 0 0 1px rgba(94,231,239,.11);
+}
+
+.deck-card.is-active::after { transform: translateX(40%); }
+.deck-card.is-active img { transform: scale(1.0); }
+
+.deck-card > div {
+  position: absolute;
+  z-index: 4;
+  right: 24px;
+  bottom: 24px;
+  left: 24px;
+  display: grid;
+  gap: 4px;
+  transform: translateZ(40px);
+}
+
+.deck-card small {
+  color: var(--aqua);
+  font-size: .58rem;
+  font-weight: 850;
+  letter-spacing: .13em;
+}
+
+.deck-card strong {
+  color: #fff;
+  font-size: clamp(1.15rem, 1.8vw, 1.65rem);
+  letter-spacing: -.025em;
+}
+
+/* More predictable fallback transforms for browsers without CSS abs(). */
+.deck-card { transform: translateX(-50%) translateZ(-420px) rotateY(0deg) scale(.82); opacity: .15; }
+.deck-card[style*="--deck-offset:-2"], .deck-card[style*="--deck-offset: -2"] { transform: translateX(-155%) translateZ(-330px) rotateY(28deg) scale(.84); opacity: .27; z-index: 1; }
+.deck-card[style*="--deck-offset:-1"], .deck-card[style*="--deck-offset: -1"] { transform: translateX(-104%) translateZ(-155px) rotateY(15deg) scale(.91); opacity: .66; z-index: 3; }
+.deck-card[style*="--deck-offset:0"], .deck-card[style*="--deck-offset: 0"] { transform: translateX(-50%) translateZ(0) rotateY(0) scale(1); opacity: 1; z-index: 5; }
+.deck-card[style*="--deck-offset:1"], .deck-card[style*="--deck-offset: 1"] { transform: translateX(4%) translateZ(-155px) rotateY(-15deg) scale(.91); opacity: .66; z-index: 3; }
+.deck-card[style*="--deck-offset:2"], .deck-card[style*="--deck-offset: 2"] { transform: translateX(55%) translateZ(-330px) rotateY(-28deg) scale(.84); opacity: .27; z-index: 1; }
+
+/* Interactive 3D preview inside the WhatsApp configurator. */
+.builder-3d-preview {
+  position: relative;
+  min-height: 280px;
+  margin: -6px -6px 28px;
+  overflow: hidden;
+  border: 1px solid rgba(3,39,49,.12);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 70% 20%, rgba(37,221,234,.2), transparent 35%),
+    linear-gradient(145deg, #06384a, #031a22 68%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 24px 58px rgba(4,44,55,.16);
+}
+
+.builder-3d-preview::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,.9), transparent 93%);
+}
+
+#builder3DCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+
+.builder-3d-preview[data-webgl="ready"] #builder3DCanvas { opacity: 1; }
+.builder-3d-preview[data-webgl="ready"] .builder-3d-fallback { opacity: 0; }
+
+.builder-3d-meta {
+  position: absolute;
+  z-index: 4;
+  right: 18px;
+  bottom: 16px;
+  left: 18px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: end;
+  column-gap: 12px;
+  pointer-events: none;
+}
+
+.builder-3d-meta span {
+  color: var(--aqua);
+  font-size: .56rem;
+  font-weight: 850;
+  letter-spacing: .14em;
+}
+
+.builder-3d-meta strong {
+  justify-self: end;
+  color: #fff;
+  font-size: .82rem;
+}
+
+.builder-3d-meta small {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  color: rgba(255,255,255,.42);
+  font-size: .58rem;
+}
+
+.builder-3d-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: opacity .4s ease;
+}
+
+.builder-3d-fallback i {
+  position: absolute;
+  width: 42%;
+  height: 28%;
+  border: 1px solid rgba(125,236,244,.25);
+  transform: perspective(650px) rotateX(62deg) rotateZ(-14deg);
+}
+
+.builder-3d-fallback i:nth-child(2) { width: 50%; height: 34%; transform: perspective(650px) rotateX(62deg) rotateZ(-14deg) translateZ(30px); }
+.builder-3d-fallback i:nth-child(3) { width: 58%; height: 40%; transform: perspective(650px) rotateX(62deg) rotateZ(-14deg) translateZ(60px); }
+
+/* CTA ends with a sculptural 3D pool object instead of another flat overlay. */
+.final-cta-3d {
+  position: absolute;
+  z-index: 2;
+  right: 2vw;
+  top: 50%;
+  width: min(42vw, 650px);
+  aspect-ratio: 1.2;
+  transform: translateY(-50%);
+  perspective: 1000px;
+  pointer-events: none;
+  opacity: .56;
+}
+
+.cta-orbit,
+.cta-pool-slab {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+}
+
+.cta-orbit {
+  border: 1px solid rgba(111,241,249,.18);
+  border-radius: 50%;
+  animation: ctaOrbit 14s linear infinite;
+}
+
+.cta-orbit-a {
+  width: 82%;
+  height: 54%;
+  transform: translate(-50%,-50%) rotateX(66deg) rotateZ(16deg);
+}
+
+.cta-orbit-b {
+  width: 58%;
+  height: 76%;
+  border-color: rgba(255,194,26,.13);
+  animation-duration: 19s;
+  animation-direction: reverse;
+  transform: translate(-50%,-50%) rotateY(65deg) rotateZ(-21deg);
+}
+
+.cta-pool-slab {
+  width: 58%;
+  height: 37%;
+  border: 2px solid rgba(238,254,255,.54);
+  border-radius: 48% 20% 46% 18% / 38% 20% 42% 24%;
+  background: linear-gradient(145deg, rgba(20,226,240,.5), rgba(0,95,164,.65));
+  box-shadow: inset 0 0 28px rgba(255,255,255,.18), 0 32px 70px rgba(0,0,0,.28);
+  transform: translate(-50%,-50%) rotateX(64deg) rotateZ(-16deg) translateZ(40px);
+}
+
+.cta-pool-slab i {
+  position: absolute;
+  inset: 9%;
+  border: 1px solid rgba(255,255,255,.44);
+  border-radius: inherit;
+  background: repeating-radial-gradient(ellipse at center, rgba(255,255,255,.13) 0 2px, transparent 3px 14px);
+  animation: ctaWater 9s linear infinite;
+}
+
+@keyframes ctaOrbit {
+  to { rotate: 360deg; }
+}
+
+@keyframes ctaWater {
+  to { background-position: 70px 36px; }
+}
+
+/* Make the existing water-to-stone bridge feel volumetric. */
+.water-to-stone {
+  perspective: 1300px;
+}
+
+.water-transition-layer,
+.stone-transition-layer,
+.transition-wave {
+  transform-style: preserve-3d;
+}
+
+.transition-ripples i:nth-child(1) { transform: translateZ(10px) scale(.86); }
+.transition-ripples i:nth-child(2) { transform: translateZ(36px) scale(1.05); }
+.transition-ripples i:nth-child(3) { transform: translateZ(68px) scale(1.22); }
+
+@media (max-width: 1180px) {
+  .hero-webgl { width: 58vw; height: 55%; opacity: .58; }
+  .project-deck { height: 470px; }
+  .deck-card { width: min(50vw, 520px); }
+}
+
+@media (max-width: 980px) {
+  .hero-webgl { display: none; }
+  .project-deck-wrap { margin-bottom: 68px; }
+  .project-deck-head strong { display: none; }
+  .project-deck { height: 390px; overflow-x: auto; overflow-y: hidden; display: flex; gap: 14px; perspective: none; scroll-snap-type: x mandatory; padding: 0 4vw 16px; scrollbar-width: none; }
+  .project-deck::-webkit-scrollbar { display: none; }
+  .deck-card,
+  .deck-card[style] {
+    position: relative;
+    top: auto;
+    left: auto;
+    flex: 0 0 min(76vw, 420px);
+    width: auto;
+    height: 100%;
+    transform: none !important;
+    opacity: 1 !important;
+    scroll-snap-align: center;
+  }
+  .project-deck-controls { display: none; }
+  .final-cta-3d { width: 62vw; right: -16vw; opacity: .3; }
+}
+
+@media (max-width: 820px) {
+  .spatial-webgl-canvas,
+  .spatial-webgl-ui { display: none !important; }
+  .spatial-viewport[data-webgl="ready"] .spatial-scene { opacity: 1; }
+  .materials-stage-frame::before { transform: none; inset: 8px -8px -10px 12px; }
+  .material-visual picture { transform: none !important; }
+  .builder-3d-preview { min-height: 230px; }
+}
+
+@media (max-width: 560px) {
+  .project-deck-wrap { margin-top: 0; padding-top: 14px; }
+  .project-deck-head { align-items: start; margin-bottom: 14px; }
+  .project-deck { height: 330px; padding-inline: 0; }
+  .deck-card,
+  .deck-card[style] { flex-basis: 86vw; border-radius: 20px; }
+  .builder-3d-preview { min-height: 210px; margin-bottom: 22px; }
+  .builder-3d-meta strong { font-size: .72rem; }
+  .final-cta-3d { width: 82vw; right: -32vw; opacity: .22; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-webgl,
+  .spatial-webgl-canvas,
+  #builder3DCanvas { display: none !important; }
+  .spatial-viewport[data-webgl="ready"] .spatial-scene { opacity: 1 !important; }
+  .cta-orbit,
+  .cta-pool-slab i { animation: none !important; }
+  .deck-card,
+  .deck-card[style] { transition: none !important; }
+}

@@ -776,6 +776,89 @@
     }
   }
 
+  function initProjectDeck3D() {
+    const deck = $('#projectDeck');
+    const cards = deck ? $$('[data-deck-card]', deck) : [];
+    const prev = $('#deckPrev');
+    const next = $('#deckNext');
+    const counter = $('#deckCounter');
+    if (!deck || !cards.length) return;
+
+    let active = 0;
+    let wheelLock = false;
+    let startX = 0;
+    let deltaX = 0;
+
+    const render = () => {
+      cards.forEach((card, index) => {
+        let offset = index - active;
+        const half = Math.ceil(cards.length / 2);
+        if (offset > half) offset -= cards.length;
+        if (offset < -half) offset += cards.length;
+        card.style.setProperty('--deck-offset', String(offset));
+        card.classList.toggle('is-active', index === active);
+        card.setAttribute('aria-hidden', index === active ? 'false' : 'true');
+      });
+      if (counter) counter.textContent = `${String(active + 1).padStart(2, '0')} / ${String(cards.length).padStart(2, '0')}`;
+    };
+
+    const setActive = index => {
+      active = (index + cards.length) % cards.length;
+      render();
+    };
+
+    prev?.addEventListener('click', () => setActive(active - 1));
+    next?.addEventListener('click', () => setActive(active + 1));
+
+    cards.forEach((card, index) => card.addEventListener('click', () => setActive(index)));
+
+    if (finePointer && !reducedMotion) {
+      deck.addEventListener('wheel', event => {
+        if (Math.abs(event.deltaY) < 12 || wheelLock) return;
+        wheelLock = true;
+        setActive(active + (event.deltaY > 0 ? 1 : -1));
+        window.setTimeout(() => { wheelLock = false; }, 420);
+      }, { passive: true });
+    }
+
+    deck.addEventListener('pointerdown', event => {
+      startX = event.clientX;
+      deltaX = 0;
+      deck.setPointerCapture?.(event.pointerId);
+    });
+    deck.addEventListener('pointermove', event => {
+      if (!startX) return;
+      deltaX = event.clientX - startX;
+    }, { passive: true });
+    deck.addEventListener('pointerup', event => {
+      if (Math.abs(deltaX) > 55) setActive(active + (deltaX < 0 ? 1 : -1));
+      startX = 0; deltaX = 0;
+      deck.releasePointerCapture?.(event.pointerId);
+    });
+
+    render();
+  }
+
+  function initMaterialDepth() {
+    const frame = $('.materials-stage-frame');
+    if (!frame || !finePointer || reducedMotion) return;
+    frame.addEventListener('pointermove', event => {
+      const rect = frame.getBoundingClientRect();
+      const nx = ((event.clientX - rect.left) / rect.width - .5) * 2;
+      const ny = ((event.clientY - rect.top) / rect.height - .5) * 2;
+      frame.style.setProperty('--material-light-x', `${(nx * .5 + .5) * 100}%`);
+      frame.style.setProperty('--material-light-y', `${(ny * .5 + .5) * 100}%`);
+      frame.style.setProperty('--material-depth-x', `${nx * 7}px`);
+      frame.style.setProperty('--material-depth-y', `${ny * 5}px`);
+    }, { passive: true });
+    frame.addEventListener('pointerleave', () => {
+      frame.style.setProperty('--material-light-x', '50%');
+      frame.style.setProperty('--material-light-y', '50%');
+      frame.style.setProperty('--material-depth-x', '0px');
+      frame.style.setProperty('--material-depth-y', '0px');
+    });
+  }
+
   function initYear() {
     const year = $('#year');
     if (year) year.textContent = String(new Date().getFullYear());
@@ -799,6 +882,8 @@
   initCaseMotion();
   initSpatial3D();
   initDepthTilt();
+  initProjectDeck3D();
+  initMaterialDepth();
   initScrollState();
   initYear();
   createMasterLoop(waterModel);
