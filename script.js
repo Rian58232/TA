@@ -4,6 +4,7 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const finePointer = window.matchMedia('(pointer: fine)').matches;
   const saveData = Boolean(navigator.connection && navigator.connection.saveData);
+  const mobileLite = window.matchMedia('(max-width: 980px)').matches || window.matchMedia('(pointer: coarse)').matches;
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
@@ -39,8 +40,8 @@
       window.setTimeout(() => loader.remove(), 700);
     };
 
-    if (alreadySeen || reducedMotion) {
-      window.setTimeout(finish, 90);
+    if (alreadySeen || reducedMotion || mobileLite) {
+      window.setTimeout(finish, mobileLite ? 24 : 90);
       return;
     }
 
@@ -198,7 +199,7 @@
 
   function initWaterFX() {
     const canvas = $('#waterCanvas');
-    if (!canvas || reducedMotion || saveData) return null;
+    if (!canvas || reducedMotion || saveData || mobileLite) return null;
 
     const context = canvas.getContext('2d', { alpha: true });
     if (!context) return null;
@@ -523,7 +524,7 @@
           const visible = entries[0]?.isIntersecting;
           if (!visible) {
             pause();
-          } else if (!saveData && !reducedMotion && !userPaused && index === 0) {
+          } else if (!saveData && !reducedMotion && !mobileLite && !userPaused && index === 0) {
             play();
           }
         }, { threshold: .35 });
@@ -666,6 +667,23 @@
     const heroFilm = $('.hero-film');
     const cursor = $('#cursorLens');
 
+    // Phones do not need a permanent animation loop. Schedule only when scroll/resize changes.
+    if (mobileLite) {
+      let scheduled = false;
+      const runMobileFrame = () => {
+        if (scheduled) return;
+        scheduled = true;
+        requestAnimationFrame(() => {
+          scheduled = false;
+          if (state.visible) updateScrollEffects();
+        });
+      };
+      window.addEventListener('scroll', runMobileFrame, { passive: true });
+      window.addEventListener('resize', runMobileFrame, { passive: true });
+      runMobileFrame();
+      return;
+    }
+
     const frame = timestamp => {
       if (state.visible) {
         if (finePointer && !reducedMotion) {
@@ -693,7 +711,7 @@
   function initSpatial3D() {
     const viewport = $('#spatialViewport');
     const scene = $('#spatialScene');
-    if (!viewport || !scene || reducedMotion) return;
+    if (!viewport || !scene || reducedMotion || mobileLite) return;
 
     if (finePointer) {
       let leaveTimer = 0;
@@ -859,6 +877,17 @@
     });
   }
 
+  function initDesktop3DModule() {
+    // Three.js is intentionally not downloaded/parsing on phones. Desktop keeps the full 3D experience.
+    if (mobileLite || reducedMotion || saveData || !finePointer || window.innerWidth < 1024) return;
+    const load = () => import('./three-scenes.js?v=3.3.1').catch(error => {
+      console.warn('Experiência 3D indisponível; usando o layout padrão.', error);
+      document.documentElement.classList.add('no-webgl');
+    });
+    if ('requestIdleCallback' in window) window.requestIdleCallback(load, { timeout: 1400 });
+    else window.setTimeout(load, 650);
+  }
+
   function initYear() {
     const year = $('#year');
     if (year) year.textContent = String(new Date().getFullYear());
@@ -885,6 +914,7 @@
   initProjectDeck3D();
   initMaterialDepth();
   initScrollState();
+  initDesktop3DModule();
   initYear();
   createMasterLoop(waterModel);
 })();
